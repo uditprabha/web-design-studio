@@ -311,47 +311,86 @@ const DEMO_DATA = {
   }
 };
 
+function normalizeCategoryKey(rawCategory) {
+  if (!rawCategory) return 'interior';
+  const clean = String(rawCategory).toLowerCase().trim();
+  if (clean.includes('interior')) return 'interior';
+  if (clean.includes('salon') || clean.includes('beauty')) return 'salon';
+  if (clean.includes('restaurant') || clean.includes('caf') || clean.includes('food')) return 'restaurant';
+  if (clean.includes('dental') || clean.includes('clinic')) return 'dental';
+  if (clean.includes('gym') || clean.includes('fitness')) return 'gym';
+  return DEMO_DATA[clean] ? clean : 'interior';
+}
+
 function initHeroShowcase() {
   const tabs = document.querySelectorAll('.showcase-tab');
   const addressUrl = document.getElementById('hero-address-url');
   const screens = document.querySelectorAll('.concept-preview-screen');
   const deviceBtns = document.querySelectorAll('.device-btn');
   const mockupContainer = document.querySelector('.mockup-container');
+  const heroMockupOpenBtn = document.getElementById('hero-mockup-open-btn');
+  const heroMockupViewport = document.getElementById('hero-mockup-viewport');
+
+  let currentActiveCategory = 'interior';
 
   if (!tabs.length) return;
+
+  const setActiveCategory = (category) => {
+    const normKey = normalizeCategoryKey(category);
+    currentActiveCategory = normKey;
+
+    // Track tab switch
+    trackEvent('view_demo', { category: normKey, trigger: 'hero_tab' });
+
+    // Update tabs
+    tabs.forEach(t => {
+      const tKey = normalizeCategoryKey(t.getAttribute('data-category'));
+      const isActive = tKey === normKey;
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    // Update URL in address bar
+    if (addressUrl && DEMO_DATA[normKey]) {
+      addressUrl.textContent = DEMO_DATA[normKey].url;
+    }
+
+    // Update preview screens
+    screens.forEach(screen => {
+      const sKey = normalizeCategoryKey(screen.getAttribute('data-screen'));
+      screen.classList.toggle('active', sKey === normKey);
+    });
+  };
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const category = tab.getAttribute('data-category');
-      if (!category) return;
-
-      // Track tab switch
-      trackEvent('view_demo', { category, trigger: 'hero_tab' });
-
-      // Update tabs
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      // Update URL in address bar
-      if (addressUrl && DEMO_DATA[category]) {
-        addressUrl.textContent = DEMO_DATA[category].url;
-      }
-
-      // Update preview screens
-      screens.forEach(screen => {
-        if (screen.getAttribute('data-screen') === category) {
-          screen.classList.add('active');
-        } else {
-          screen.classList.remove('active');
-        }
-      });
+      if (category) setActiveCategory(category);
     });
   });
+
+  // Hero Mockup "View Demo ↗" button in browser chrome
+  if (heroMockupOpenBtn) {
+    heroMockupOpenBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      trackEvent('click_demo', { category: currentActiveCategory, source: 'hero_mockup_button' });
+      openDemoModalWithCategory(currentActiveCategory);
+    });
+  }
+
+  // Click on Hero Mockup viewport to inspect full demo
+  if (heroMockupViewport) {
+    heroMockupViewport.addEventListener('click', () => {
+      trackEvent('click_demo', { category: currentActiveCategory, source: 'hero_mockup_viewport' });
+      openDemoModalWithCategory(currentActiveCategory);
+    });
+  }
 
   // Device switcher
   if (deviceBtns.length && mockupContainer) {
     deviceBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const mode = btn.getAttribute('data-mode');
         deviceBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -372,11 +411,23 @@ function initHeroShowcase() {
 function initIndustrySelector() {
   const cards = document.querySelectorAll('.industry-card');
   cards.forEach(card => {
-    card.addEventListener('click', () => {
-      const category = card.getAttribute('data-category');
-      if (category) {
-        trackEvent('click_industry', { category });
-        openDemoModalWithCategory(category);
+    const handleOpen = (e) => {
+      const targetCard = e.currentTarget || card;
+      const rawCat = targetCard.getAttribute('data-category');
+      const category = normalizeCategoryKey(rawCat);
+      trackEvent('click_industry', { category });
+      openDemoModalWithCategory(category);
+    };
+
+    card.addEventListener('click', handleOpen);
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `View ${card.querySelector('.industry-card-title')?.textContent || 'Industry'} Website Demo`);
+    
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleOpen(e);
       }
     });
   });
@@ -405,15 +456,34 @@ function initFeaturedDemos() {
     });
   });
 
-  // "View Demo" buttons open the interactive preview modal
+  // "View Full Site Demo" buttons open the interactive preview modal
   const viewDemoBtns = document.querySelectorAll('.btn-open-demo');
   viewDemoBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const category = btn.getAttribute('data-category');
-      if (category) {
-        trackEvent('click_demo', { category, source: 'featured_section' });
-        openDemoModalWithCategory(category);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const el = e.currentTarget || btn;
+      const rawCat = el.getAttribute('data-category') || el.closest('[data-category]')?.getAttribute('data-category');
+      const category = normalizeCategoryKey(rawCat);
+      trackEvent('click_demo', { category, source: 'featured_section_btn' });
+      openDemoModalWithCategory(category);
+    });
+  });
+
+  // Entire preview windows and image frames in showcase cards also open demo on click
+  const previewWindows = document.querySelectorAll('.concept-item-card .concept-preview-window');
+  previewWindows.forEach(win => {
+    win.style.cursor = 'pointer';
+    win.setAttribute('title', 'Click to open full website demo');
+    win.addEventListener('click', (e) => {
+      // Avoid double trigger if clicking directly on a button inside
+      if (e.target.closest('.btn-open-demo') || e.target.closest('.btn-select-category')) {
+        return;
       }
+      const card = win.closest('.concept-item-card');
+      const rawCat = card?.querySelector('.btn-open-demo')?.getAttribute('data-category') || card?.id?.replace('demo-', '');
+      const category = normalizeCategoryKey(rawCat);
+      trackEvent('click_demo', { category, source: 'featured_window_click' });
+      openDemoModalWithCategory(category);
     });
   });
 }
@@ -466,16 +536,36 @@ function openDemoModalWithCategory(category) {
   const modalViewport = document.getElementById('demo-modal-body');
   const businessTypeSelect = document.getElementById('business-type');
 
-  if (!modalBackdrop || !DEMO_DATA[category]) return;
+  if (!modalBackdrop) return;
 
-  const data = DEMO_DATA[category];
+  const normKey = normalizeCategoryKey(category);
+  const data = DEMO_DATA[normKey] || DEMO_DATA.interior;
 
   if (modalCategoryBadge) modalCategoryBadge.textContent = data.category;
   if (modalTitle) modalTitle.textContent = data.brandName + ' — Concept Preview';
 
   // Populate interactive simulated viewport
   if (modalViewport) {
-    modalViewport.innerHTML = generateSimulatedPageHtml(category, data);
+    modalViewport.innerHTML = generateSimulatedPageHtml(normKey, data);
+    
+    // Attach listener to internal modal action buttons
+    const modalActionCta = modalViewport.querySelector('.modal-action-cta-btn');
+    if (modalActionCta) {
+      modalActionCta.addEventListener('click', () => {
+        trackEvent('click_free_concept', { source: 'modal_inner_cta', category: normKey });
+        modalBackdrop.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        const leadSection = document.getElementById('lead-form-section');
+        if (leadSection) {
+          leadSection.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => {
+            const nameInput = document.getElementById('business-name');
+            if (nameInput) nameInput.focus();
+          }, 450);
+        }
+      });
+    }
   }
 
   // Pre-set select in lead form
@@ -487,8 +577,8 @@ function openDemoModalWithCategory(category) {
       dental: 'Dental',
       gym: 'Gym & Fitness'
     };
-    if (map[category]) {
-      businessTypeSelect.value = map[category];
+    if (map[normKey]) {
+      businessTypeSelect.value = map[normKey];
     }
   }
 
@@ -507,6 +597,8 @@ function generateSimulatedPageHtml(category, data) {
   const featuresHtml = data.features.map(f => `
     <span class="modal-feature-tag">✦ ${f}</span>
   `).join('');
+
+  const waUrl = buildWhatsAppUrl('', data.category);
 
   return `
     <div class="modal-fullsite-container">
@@ -536,8 +628,24 @@ function generateSimulatedPageHtml(category, data) {
         <div class="modal-feature-tags">
           ${featuresHtml}
         </div>
-        <div style="font-size:0.8125rem; color:#94A3B8;">
-          Customized for high conversions & instant mobile speed
+        <div class="modal-cta-button-group" style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+          <a 
+            href="${waUrl}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn btn-whatsapp btn-sm dynamic-whatsapp-link"
+            style="padding:0.45rem 1rem; font-size:0.8125rem; text-decoration:none;"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            Ask on WhatsApp
+          </a>
+          <button 
+            type="button" 
+            class="btn btn-primary btn-sm modal-action-cta-btn"
+            style="padding:0.45rem 1.1rem; font-size:0.8125rem;"
+          >
+            Get a Similar Website Concept →
+          </button>
         </div>
       </div>
     </div>

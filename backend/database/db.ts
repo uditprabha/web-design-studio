@@ -56,9 +56,13 @@ export interface AdminUser {
 let pool: pg.Pool | null = null;
 let usePostgres = false;
 
-// Local fallback storage path
-const DATA_DIR = path.join(process.cwd(), 'data');
+// Local fallback storage path (supports local disk & serverless /tmp)
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const DATA_DIR = isServerless ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DATA_FILE = path.join(DATA_DIR, 'leads_storage.json');
+
+// In-memory fallback if disk is completely unavailable
+let memoryStore: LocalStorageData | null = null;
 
 interface LocalStorageData {
   leads: Lead[];
@@ -67,142 +71,166 @@ interface LocalStorageData {
 }
 
 function ensureDataDirectory() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(DATA_FILE)) {
-    const defaultPasswordHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'AdminSecret2026!', 10);
-    const initialData: LocalStorageData = {
-      leads: [
-        {
-          id: 'lead_seed_001',
-          name: 'Sarah Jenkins',
-          business_name: 'Luxe Haven Interiors',
-          business_type: 'Interior Design',
-          whatsapp: '+1 (555) 234-8901',
-          current_website: 'https://luxehaven.example.com',
-          requirement: 'Website Redesign',
-          message: 'Looking to upgrade our current portfolio site into a high-end conversion funnel for residential design clients.',
-          source: 'facebook',
-          utm_source: 'facebook',
-          utm_medium: 'paid_social',
-          utm_campaign: 'interior_demo_ads',
-          utm_content: 'ad_lux_01',
-          utm_term: 'luxury interior web design',
-          landing_page: '/#industry-selector',
-          status: 'NEW',
-          created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 4).toISOString(),
-        },
-        {
-          id: 'lead_seed_002',
-          name: 'Dr. Marcus Vance',
-          business_name: 'Apex Dental Care',
-          business_type: 'Dental Clinic',
-          whatsapp: '+1 (555) 876-5432',
-          current_website: null,
-          requirement: 'New Website',
-          message: 'Opening a new modern cosmetic clinic next month. Need fast appointment booking integration.',
-          source: 'instagram',
-          utm_source: 'instagram',
-          utm_medium: 'paid_social',
-          utm_campaign: 'dental_funnel_campaign',
-          utm_content: 'video_story_02',
-          utm_term: 'dental website designer',
-          landing_page: '/#industry-selector',
-          status: 'CONTACTED',
-          created_at: new Date(Date.now() - 3600000 * 28).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 20).toISOString(),
-        },
-        {
-          id: 'lead_seed_003',
-          name: 'Elena Rostova',
-          business_name: 'Aura Hair & Day Spa',
-          business_type: 'Salon & Beauty',
-          whatsapp: '+1 (555) 432-1098',
-          current_website: 'https://aurasalon.example.com',
-          requirement: 'Website Upgrade',
-          message: 'Want to showcase our stylists and allow easy Instagram DM / WhatsApp booking.',
-          source: 'direct',
-          utm_source: null,
-          utm_medium: null,
-          utm_campaign: null,
-          utm_content: null,
-          utm_term: null,
-          landing_page: '/',
-          status: 'QUALIFIED',
-          created_at: new Date(Date.now() - 3600000 * 52).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 18).toISOString(),
-        },
-        {
-          id: 'lead_seed_004',
-          name: 'Chef Antonio Rossi',
-          business_name: 'Trattoria Bella Vista',
-          business_type: 'Restaurant & Café',
-          whatsapp: '+1 (555) 321-9876',
-          current_website: null,
-          requirement: 'New Website',
-          message: 'Need an online table reservation menu website with luxury aesthetic.',
-          source: 'google',
-          utm_source: 'google',
-          utm_medium: 'cpc',
-          utm_campaign: 'restaurant_web_design',
-          utm_content: 'search_ad_01',
-          utm_term: 'restaurant website designer',
-          landing_page: '/#industry-selector',
-          status: 'PROPOSAL_SENT',
-          created_at: new Date(Date.now() - 3600000 * 96).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 12).toISOString(),
-        }
-      ],
-      notes: [
-        {
-          id: 'note_seed_001',
-          lead_id: 'lead_seed_002',
-          note: 'Called on WhatsApp. Dr. Marcus Vance is available Thursday 3 PM for concept review.',
-          author: 'Udit Das',
-          created_at: new Date(Date.now() - 3600000 * 20).toISOString(),
-        },
-        {
-          id: 'note_seed_002',
-          lead_id: 'lead_seed_004',
-          note: 'Sent comprehensive proposal ($1,450) with 3-day turnaround. Awaiting confirmation.',
-          author: 'Udit Das',
-          created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
-        }
-      ],
-      admin: [
-        {
-          id: 'admin_001',
-          email: (process.env.ADMIN_EMAIL || 'admin@uditdas.com').toLowerCase(),
-          password_hash: defaultPasswordHash,
-          name: 'Udit Das',
-          created_at: new Date().toISOString(),
-          last_login: null,
-        }
-      ]
-    };
-    fs.writeFileSync(DATA_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(DATA_FILE)) {
+      const defaultPasswordHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'AdminSecret2026!', 10);
+      const initialData: LocalStorageData = {
+        leads: [
+          {
+            id: 'lead_seed_001',
+            name: 'Sarah Jenkins',
+            business_name: 'Luxe Haven Interiors',
+            business_type: 'Interior Design',
+            whatsapp: '+1 (555) 234-8901',
+            current_website: 'https://luxehaven.example.com',
+            requirement: 'Website Redesign',
+            message: 'Looking to upgrade our current portfolio site into a high-end conversion funnel for residential design clients.',
+            source: 'facebook',
+            utm_source: 'facebook',
+            utm_medium: 'paid_social',
+            utm_campaign: 'interior_demo_ads',
+            utm_content: 'ad_lux_01',
+            utm_term: 'luxury interior web design',
+            landing_page: '/#industry-selector',
+            status: 'NEW',
+            created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
+            updated_at: new Date(Date.now() - 3600000 * 4).toISOString(),
+          },
+          {
+            id: 'lead_seed_002',
+            name: 'Dr. Marcus Vance',
+            business_name: 'Apex Dental Care',
+            business_type: 'Dental Clinic',
+            whatsapp: '+1 (555) 876-5432',
+            current_website: null,
+            requirement: 'New Website',
+            message: 'Opening a new modern cosmetic clinic next month. Need fast appointment booking integration.',
+            source: 'instagram',
+            utm_source: 'instagram',
+            utm_medium: 'paid_social',
+            utm_campaign: 'dental_funnel_campaign',
+            utm_content: 'video_story_02',
+            utm_term: 'dental website designer',
+            landing_page: '/#industry-selector',
+            status: 'CONTACTED',
+            created_at: new Date(Date.now() - 3600000 * 28).toISOString(),
+            updated_at: new Date(Date.now() - 3600000 * 20).toISOString(),
+          },
+          {
+            id: 'lead_seed_003',
+            name: 'Elena Rostova',
+            business_name: 'Aura Hair & Day Spa',
+            business_type: 'Salon & Beauty',
+            whatsapp: '+1 (555) 432-1098',
+            current_website: 'https://aurasalon.example.com',
+            requirement: 'Website Upgrade',
+            message: 'Want to showcase our stylists and allow easy Instagram DM / WhatsApp booking.',
+            source: 'direct',
+            utm_source: null,
+            utm_medium: null,
+            utm_campaign: null,
+            utm_content: null,
+            utm_term: null,
+            landing_page: '/',
+            status: 'QUALIFIED',
+            created_at: new Date(Date.now() - 3600000 * 52).toISOString(),
+            updated_at: new Date(Date.now() - 3600000 * 18).toISOString(),
+          },
+          {
+            id: 'lead_seed_004',
+            name: 'Chef Antonio Rossi',
+            business_name: 'Trattoria Bella Vista',
+            business_type: 'Restaurant & Café',
+            whatsapp: '+1 (555) 321-9876',
+            current_website: null,
+            requirement: 'New Website',
+            message: 'Need an online table reservation menu website with luxury aesthetic.',
+            source: 'google',
+            utm_source: 'google',
+            utm_medium: 'cpc',
+            utm_campaign: 'restaurant_web_design',
+            utm_content: 'search_ad_01',
+            utm_term: 'restaurant website designer',
+            landing_page: '/#industry-selector',
+            status: 'PROPOSAL_SENT',
+            created_at: new Date(Date.now() - 3600000 * 96).toISOString(),
+            updated_at: new Date(Date.now() - 3600000 * 12).toISOString(),
+          }
+        ],
+        notes: [
+          {
+            id: 'note_seed_001',
+            lead_id: 'lead_seed_002',
+            note: 'Called on WhatsApp. Dr. Marcus Vance is available Thursday 3 PM for concept review.',
+            author: 'Udit Das',
+            created_at: new Date(Date.now() - 3600000 * 20).toISOString(),
+          },
+          {
+            id: 'note_seed_002',
+            lead_id: 'lead_seed_004',
+            note: 'Sent comprehensive proposal ($1,450) with 3-day turnaround. Awaiting confirmation.',
+            author: 'Udit Das',
+            created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
+          }
+        ],
+        admin: [
+          {
+            id: 'admin_001',
+            email: (process.env.ADMIN_EMAIL || 'admin@uditdas.com').toLowerCase(),
+            password_hash: defaultPasswordHash,
+            name: 'Udit Das',
+            created_at: new Date().toISOString(),
+            last_login: null,
+          }
+        ]
+      };
+      fs.writeFileSync(DATA_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
+      memoryStore = initialData;
+    }
+  } catch (err) {
+    if (!memoryStore) {
+      const defaultPasswordHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'AdminSecret2026!', 10);
+      memoryStore = {
+        leads: [],
+        notes: [],
+        admin: [
+          {
+            id: 'admin_001',
+            email: (process.env.ADMIN_EMAIL || 'admin@uditdas.com').toLowerCase(),
+            password_hash: defaultPasswordHash,
+            name: 'Udit Das',
+            created_at: new Date().toISOString(),
+            last_login: null,
+          }
+        ]
+      };
+    }
   }
 }
 
 function readLocalStorage(): LocalStorageData {
   ensureDataDirectory();
   try {
-    const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-    return JSON.parse(raw);
+    if (fs.existsSync(DATA_FILE)) {
+      const raw = fs.readFileSync(DATA_FILE, 'utf-8');
+      return JSON.parse(raw);
+    }
   } catch (err) {
-    console.error('Error reading local storage data file:', err);
-    return { leads: [], notes: [], admin: [] };
+    // Disk fallback to memory store
   }
+  return memoryStore || { leads: [], notes: [], admin: [] };
 }
 
 function writeLocalStorage(data: LocalStorageData): void {
+  memoryStore = data;
   ensureDataDirectory();
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
-    console.error('Error writing local storage data file:', err);
+    // In-memory already updated
   }
 }
 

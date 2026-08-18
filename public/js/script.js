@@ -238,7 +238,8 @@ const DEMO_DATA = {
     category: 'Interior Design',
     brandName: 'AURA SPACES',
     url: 'https://auraspaces.design',
-    image: '/assets/images/demo_interior_luxury_1787014062394.jpg',
+    image: '/assets/images/interior.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
     title: 'Minimalist Architecture & Luxury Interior Studio',
     tagline: 'Designing calm, enduring sanctuaries for modern living with travertine stone and warm light.',
     accentColor: '#B89B72',
@@ -253,7 +254,8 @@ const DEMO_DATA = {
     category: 'Salon & Beauty',
     brandName: 'LUMIÈRE BEAUTY',
     url: 'https://lumierebeauty.co',
-    image: '/assets/images/demo_salon_luxury_1787014074819.jpg',
+    image: '/assets/images/salon.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80',
     title: 'Luxury Hair, Skin & Aesthetic Sanctuary',
     tagline: 'Elevating everyday beauty with bespoke treatments, balayage mastery and VIP booking.',
     accentColor: '#D97706',
@@ -268,7 +270,8 @@ const DEMO_DATA = {
     category: 'Restaurant & Café',
     brandName: 'OSTERIA FLORA',
     url: 'https://osteriaflora.it',
-    image: '/assets/images/demo_restaurant_luxury_1787014087345.jpg',
+    image: '/assets/images/restaurant.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
     title: 'Artisan Woodfired Kitchen & Espresso Bar',
     tagline: 'Authentic seasonal Italian dining in a candlelit botanical atmosphere.',
     accentColor: '#DC2626',
@@ -283,7 +286,8 @@ const DEMO_DATA = {
     category: 'Dental Clinic',
     brandName: 'APEX DENTAL CARE',
     url: 'https://apexdental.clinic',
-    image: '/assets/images/demo_dental_luxury_1787014098266.jpg',
+    image: '/assets/images/dental.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80',
     title: 'Modern Cosmetic & Family Dental Practice',
     tagline: 'Gentle, technology-driven dentistry with radiant smile makeovers and 3D digital scans.',
     accentColor: '#0284C7',
@@ -298,7 +302,8 @@ const DEMO_DATA = {
     category: 'Gym & Fitness',
     brandName: 'FORGE ATHLETICS',
     url: 'https://forgeathletics.fit',
-    image: '/assets/images/demo_gym_luxury_1787014114910.jpg',
+    image: '/assets/images/gym.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
     title: 'High-Performance Strength & Conditioning Club',
     tagline: 'Transform your body with elite coaching, Olympic platforms and high-energy community.',
     accentColor: '#16A34A',
@@ -616,6 +621,7 @@ function generateSimulatedPageHtml(category, data) {
         <div class="modal-fullsite-img-frame">
           <img 
             src="${data.image}" 
+            onerror="this.onerror=null; this.src='${data.fallbackImage || ''}';"
             alt="${data.title} Luxury Website Demo" 
             class="modal-fullsite-img" 
             referrerPolicy="no-referrer" 

@@ -1,0 +1,130 @@
+{
+  "leads": [
+    {
+      "name": "Alex Turner",
+      "business_name": "Luxe Living",
+      "business_type": "Interior Design",
+      "whatsapp": "+91 97538 59045",
+      "current_website": null,
+      "requirement": "New Website",
+      "message": null,
+      "source": "preview_test",
+      "utm_source": null,
+      "utm_medium": null,
+      "utm_campaign": null,
+      "utm_content": null,
+      "utm_term": null,
+      "landing_page": "/",
+      "status": "NEW",
+      "id": "lead_msxz8p6s_1ea29e",
+      "created_at": "2026-08-18T01:21:31.780Z",
+      "updated_at": "2026-08-18T01:21:31.780Z"
+    },
+    {
+      "id": "lead_seed_001",
+      "name": "Sarah Jenkins",
+      "business_name": "Luxe Haven Interiors",
+      "business_type": "Interior Design",
+      "whatsapp": "+1 (555) 234-8901",
+      "current_website": "https://luxehaven.example.com",
+      "requirement": "Website Redesign",
+      "message": "Looking to upgrade our current portfolio site into a high-end conversion funnel for residential design clients.",
+      "source": "facebook",
+      "utm_source": "facebook",
+      "utm_medium": "paid_social",
+      "utm_campaign": "interior_demo_ads",
+      "utm_content": "ad_lux_01",
+      "utm_term": "luxury interior web design",
+      "landing_page": "/#industry-selector",
+      "status": "NEW",
+      "created_at": "2026-08-17T21:07:40.364Z",
+      "updated_at": "2026-08-17T21:07:40.364Z"
+    },
+    {
+      "id": "lead_seed_002",
+      "name": "Dr. Marcus Vance",
+      "business_name": "Apex Dental Care",
+      "business_type": "Dental Clinic",
+      "whatsapp": "+1 (555) 876-5432",
+      "current_website": null,
+      "requirement": "New Website",
+      "message": "Opening a new modern cosmetic clinic next month. Need fast appointment booking integration.",
+      "source": "instagram",
+      "utm_source": "instagram",
+      "utm_medium": "paid_social",
+      "utm_campaign": "dental_funnel_campaign",
+      "utm_content": "video_story_02",
+      "utm_term": "dental website designer",
+      "landing_page": "/#industry-selector",
+      "status": "CONTACTED",
+      "created_at": "2026-08-16T21:07:40.364Z",
+      "updated_at": "2026-08-17T05:07:40.364Z"
+    },
+    {
+      "id": "lead_seed_003",
+      "name": "Elena Rostova",
+      "business_name": "Aura Hair & Day Spa",
+      "business_type": "Salon & Beauty",
+      "whatsapp": "+1 (555) 432-1098",
+      "current_website": "https://aurasalon.example.com",
+      "requirement": "Website Upgrade",
+      "message": "Want to showcase our stylists and allow easy Instagram DM / WhatsApp booking.",
+      "source": "direct",
+      "utm_source": null,
+      "utm_medium": null,
+      "utm_campaign": null,
+      "utm_content": null,
+      "utm_term": null,
+      "landing_page": "/",
+      "status": "QUALIFIED",
+      "created_at": "2026-08-15T21:07:40.364Z",
+      "updated_at": "2026-08-17T07:07:40.364Z"
+    },
+    {
+      "id": "lead_seed_004",
+      "name": "Chef Antonio Rossi",
+      "business_name": "Trattoria Bella Vista",
+      "business_type": "Restaurant & Café",
+      "whatsapp": "+1 (555) 321-9876",
+      "current_website": null,
+      "requirement": "New Website",
+      "message": "Need an online table reservation menu website with luxury aesthetic.",
+      "source": "google",
+      "utm_source": "google",
+      "utm_medium": "cpc",
+      "utm_campaign": "restaurant_web_design",
+      "utm_content": "search_ad_01",
+      "utm_term": "restaurant website designer",
+      "landing_page": "/#industry-selector",
+      "status": "PROPOSAL_SENT",
+      "created_at": "2026-08-14T01:07:40.364Z",
+      "updated_at": "2026-08-17T13:07:40.364Z"
+    }
+  ],
+  "notes": [
+    {
+      "id": "note_seed_001",
+      "lead_id": "lead_seed_002",
+      "note": "Called on WhatsApp. Dr. Marcus Vance is available Thursday 3 PM for concept review.",
+      "author": "Udit Das",
+      "created_at": "2026-08-17T05:07:40.364Z"
+    },
+    {
+      "id": "note_seed_002",
+      "lead_id": "lead_seed_004",
+      "note": "Sent comprehensive proposal ($1,450) with 3-day turnaround. Awaiting confirmation.",
+      "author": "Udit Das",
+      "created_at": "2026-08-17T13:07:40.364Z"
+    }
+  ],
+  "admin": [
+    {
+      "id": "admin_001",
+      "email": "admin@uditdas.com",
+      "password_hash": "$2b$10$bvhS3gFSCyK7DINwgdtRWuKz84DNsEJFB9cltxwDhf3giBw1iyHEC",
+      "name": "Udit Das",
+      "created_at": "2026-08-18T01:07:40.364Z",
+      "last_login": "2026-08-18T01:21:37.703Z"
+    }
+  ]
+}

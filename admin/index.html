@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Lead Dashboard & CRM — Udit Das</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body class="admin-body">
+    <!-- Admin Top Header -->
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <div class="admin-brand">
+          <span class="admin-brand-title">UDIT DAS</span>
+          <span class="admin-brand-badge">Lead Dashboard</span>
+          <div class="live-indicator">
+            <span class="live-indicator-dot"></span>
+            Live CRM
+          </div>
+        </div>
+
+        <div class="admin-nav-actions">
+          <button id="export-csv-btn" class="btn-crm btn-crm-secondary btn-crm-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export CSV
+          </button>
+          <a href="/" target="_blank" class="btn-crm btn-crm-secondary btn-crm-sm">
+            View Live Funnel &nearr;
+          </a>
+          <div class="admin-user-pill" id="admin-user-display">
+            Admin
+          </div>
+          <button id="admin-logout-btn" class="btn-crm btn-crm-danger btn-crm-sm">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="admin-container">
+      <!-- 1. Top Analytics Metrics Cards -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Leads</div>
+          <div class="metric-value" id="stat-total">0</div>
+          <div class="metric-sub">All-time submissions</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--status-new-color);">
+          <div class="metric-label">New Enquiries</div>
+          <div class="metric-value" id="stat-new" style="color: var(--status-new-color);">0</div>
+          <div class="metric-sub">Awaiting review</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--status-contacted-color);">
+          <div class="metric-label">Contacted</div>
+          <div class="metric-value" id="stat-contacted" style="color: var(--status-contacted-color);">0</div>
+          <div class="metric-sub">Initial chat initiated</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--status-qualified-color);">
+          <div class="metric-label">Qualified</div>
+          <div class="metric-value" id="stat-qualified" style="color: var(--status-qualified-color);">0</div>
+          <div class="metric-sub">Active requirement match</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--status-proposal-color);">
+          <div class="metric-label">Proposals Sent</div>
+          <div class="metric-value" id="stat-proposals" style="color: var(--status-proposal-color);">0</div>
+          <div class="metric-sub">Concept / Quote shared</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--status-won-color);">
+          <div class="metric-label">Deals Won</div>
+          <div class="metric-value" id="stat-won" style="color: var(--status-won-color);">0</div>
+          <div class="metric-sub" id="stat-conversion-rate">0% conversion</div>
+        </div>
+      </section>
+
+      <!-- 2. Pipeline Funnel & Industry Breakdown -->
+      <section class="analytics-row">
+        <div class="analytics-card">
+          <div class="analytics-card-title">
+            <span>Lead Conversion Funnel</span>
+            <span style="font-size:0.75rem; color:var(--crm-text-dim); font-weight:normal;">Real-time Pipeline</span>
+          </div>
+          <div class="funnel-steps">
+            <div class="funnel-step">
+              <div class="funnel-step-name">New</div>
+              <div class="funnel-step-count" id="funnel-new">0</div>
+            </div>
+            <div style="color:var(--crm-text-dim); font-weight:bold;">&rarr;</div>
+            <div class="funnel-step">
+              <div class="funnel-step-name">Contacted</div>
+              <div class="funnel-step-count" id="funnel-contacted">0</div>
+            </div>
+            <div style="color:var(--crm-text-dim); font-weight:bold;">&rarr;</div>
+            <div class="funnel-step">
+              <div class="funnel-step-name">Qualified</div>
+              <div class="funnel-step-count" id="funnel-qualified">0</div>
+            </div>
+            <div style="color:var(--crm-text-dim); font-weight:bold;">&rarr;</div>
+            <div class="funnel-step">
+              <div class="funnel-step-name">Preview</div>
+              <div class="funnel-step-count" id="funnel-preview">0</div>
+            </div>
+            <div style="color:var(--crm-text-dim); font-weight:bold;">&rarr;</div>
+            <div class="funnel-step">
+              <div class="funnel-step-name">Proposal</div>
+              <div class="funnel-step-count" id="funnel-proposal">0</div>
+            </div>
+            <div style="color:var(--crm-text-dim); font-weight:bold;">&rarr;</div>
+            <div class="funnel-step" style="border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.05);">
+              <div class="funnel-step-name" style="color: var(--crm-whatsapp);">Won</div>
+              <div class="funnel-step-count" id="funnel-won" style="color: var(--crm-whatsapp);">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <div class="analytics-card-title">
+            <span>Leads by Industry</span>
+          </div>
+          <div class="distribution-list" id="industry-breakdown-list">
+            <div style="color:var(--crm-text-dim); font-size:0.75rem;">Loading data...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Lead Management Table with Filters -->
+      <section>
+        <div class="controls-bar">
+          <div class="controls-left">
+            <div class="search-input-wrapper">
+              <svg class="search-input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                id="search-leads-input"
+                class="crm-input"
+                placeholder="Search leads by name, business, phone..."
+              />
+            </div>
+
+            <select id="filter-industry" class="crm-select">
+              <option value="ALL">All Business Types</option>
+              <option value="Interior Design">Interior Design</option>
+              <option value="Salon & Beauty">Salon & Beauty</option>
+              <option value="Restaurant & Café">Restaurant & Café</option>
+              <option value="Dental Clinic">Dental Clinic</option>
+              <option value="Gym & Fitness">Gym & Fitness</option>
+              <option value="Other">Other Local Businesses</option>
+            </select>
+
+            <button id="refresh-leads-btn" class="btn-crm btn-crm-secondary btn-crm-sm" title="Refresh leads list">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              Refresh
+            </button>
+          </div>
+
+          <div class="status-pills-bar" id="status-filter-pills">
+            <button class="status-pill active" data-status="ALL">All Leads</button>
+            <button class="status-pill" data-status="NEW">New</button>
+            <button class="status-pill" data-status="CONTACTED">Contacted</button>
+            <button class="status-pill" data-status="QUALIFIED">Qualified</button>
+            <button class="status-pill" data-status="PREVIEW_CREATED">Preview Created</button>
+            <button class="status-pill" data-status="PROPOSAL_SENT">Proposal Sent</button>
+            <button class="status-pill" data-status="WON">Won</button>
+            <button class="status-pill" data-status="LOST">Lost</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Lead / Contact</th>
+                <th>Business & Industry</th>
+                <th>Requirement</th>
+                <th>WhatsApp</th>
+                <th>Status</th>
+                <th>Source</th>
+                <th>Date Received</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leads-table-body">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--crm-text-dim);">
+                  Loading leads from database...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar">
+          <div id="pagination-summary">Showing 0 of 0 leads</div>
+          <div class="pagination-controls">
+            <button id="prev-page-btn" class="btn-crm btn-crm-secondary btn-crm-sm" disabled>
+              &larr; Previous
+            </button>
+            <span id="page-indicator" style="font-weight: 600; padding: 0 0.5rem;">Page 1</span>
+            <button id="next-page-btn" class="btn-crm btn-crm-secondary btn-crm-sm" disabled>
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 4. Lead Details Slide-over Drawer -->
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
+    <div id="lead-drawer" class="lead-drawer">
+      <div class="drawer-header">
+        <div>
+          <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; color: var(--crm-text-dim); margin-bottom: 2px;">
+            Lead ID: <span id="drawer-lead-id" style="color:var(--crm-primary);"></span>
+          </div>
+          <h2 id="drawer-business-name" style="font-size: 1.25rem; font-weight: 800; color: #ffffff;">
+            Business Name
+          </h2>
+          <div id="drawer-contact-name" style="font-size: 0.8125rem; color: var(--crm-text-muted);">
+            Contact Person
+          </div>
+        </div>
+        <button id="close-drawer-btn" class="btn-crm btn-crm-secondary btn-crm-sm" style="padding: 0.25rem 0.5rem;">
+          &times;
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Status Changer Action Bar -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Pipeline Status</span>
+            <span id="drawer-current-status-badge" class="status-badge badge-new">NEW</span>
+          </div>
+          <div class="status-changer-grid">
+            <button class="status-changer-btn" data-new-status="NEW">New</button>
+            <button class="status-changer-btn" data-new-status="CONTACTED">Contacted</button>
+            <button class="status-changer-btn" data-new-status="QUALIFIED">Qualified</button>
+            <button class="status-changer-btn" data-new-status="PREVIEW_CREATED">Preview Created</button>
+            <button class="status-changer-btn" data-new-status="PROPOSAL_SENT">Proposal Sent</button>
+            <button class="status-changer-btn" data-new-status="WON" style="color:var(--crm-whatsapp);">Won</button>
+            <button class="status-changer-btn" data-new-status="LOST" style="color:var(--status-lost-color);">Lost</button>
+          </div>
+        </div>
+
+        <!-- Quick WhatsApp Action Box -->
+        <div class="drawer-section" style="border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05);">
+          <div class="drawer-section-title" style="color: var(--crm-whatsapp);">
+            <span>Direct WhatsApp Follow-up</span>
+          </div>
+          <p style="font-size: 0.8125rem; color: var(--crm-text-muted); margin-bottom: 0.75rem;">
+            Open an instant personalized WhatsApp conversation with pre-filled inquiry context:
+          </p>
+          <a
+            id="drawer-whatsapp-btn"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-crm btn-crm-whatsapp"
+            style="width: 100%; font-size: 0.875rem;"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.062-2.18-.553-1.614-.668-2.655-2.316-2.736-2.424-.078-.109-.645-.859-.645-1.637 0-.777.407-1.16.552-1.32.144-.158.314-.198.42-.198.106 0 .211.002.304.007.098.005.23-.037.36.275.134.325.46 1.12.5 1.202.041.082.068.179.014.288-.053.109-.08.178-.16.272-.08.093-.169.208-.241.279-.081.08-.166.167-.071.33.095.163.424.7 1.011 1.222.756.671 1.394.88 1.593.978.199.098.316.082.433-.053.118-.135.5-.583.634-.784.135-.2.271-.167.457-.098.186.069 1.18.556 1.384.658.203.102.339.153.389.239.051.086.051.5-.093.905z"/>
+            </svg>
+            OPEN WHATSAPP CONVERSATION &rarr;
+          </a>
+        </div>
+
+        <!-- Lead Requirements & Details -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Project Scope & Requirements</span>
+          </div>
+          <div class="detail-grid" style="margin-bottom: 0.75rem;">
+            <div class="detail-item">
+              <div class="detail-label">Industry Type</div>
+              <div class="detail-value" id="drawer-business-type">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Requirement</div>
+              <div class="detail-value" id="drawer-requirement">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">WhatsApp Number</div>
+              <div class="detail-value" id="drawer-whatsapp">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Current Website</div>
+              <div class="detail-value" id="drawer-current-website">-</div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--crm-border-subtle); padding-top: 0.75rem;">
+            <div class="detail-label">Visitor's Custom Message</div>
+            <div id="drawer-message" style="font-size: 0.8125rem; color: var(--crm-text); line-height: 1.5; font-style: italic; margin-top: 4px;">
+              No message provided.
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketing Attribution & UTMs -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Marketing Attribution</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Source</div>
+              <div class="detail-value" id="drawer-source">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">UTM Campaign</div>
+              <div class="detail-value" id="drawer-utm-campaign">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">UTM Medium</div>
+              <div class="detail-value" id="drawer-utm-medium">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">UTM Content</div>
+              <div class="detail-value" id="drawer-utm-content">-</div>
+            </div>
+            <div class="detail-item" style="grid-column: span 2;">
+              <div class="detail-label">Landing Page</div>
+              <div class="detail-value" id="drawer-landing-page" style="font-family: monospace; font-size: 0.75rem;">-</div>
+            </div>
+            <div class="detail-item" style="grid-column: span 2;">
+              <div class="detail-label">Submission Date & Time</div>
+              <div class="detail-value" id="drawer-created-at">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internal Notes Timeline -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Private Internal Notes</span>
+            <span style="font-size:0.6875rem; color:var(--crm-text-dim);">Confidential</span>
+          </div>
+
+          <form id="drawer-add-note-form" style="margin-bottom: 1rem;">
+            <textarea
+              id="drawer-note-input"
+              class="crm-input"
+              rows="2"
+              placeholder="Add follow-up note, call summary, or pricing estimate..."
+              style="padding-left: 0.75rem; resize: vertical;"
+              required
+            ></textarea>
+            <div style="text-align: right; margin-top: 0.5rem;">
+              <button type="submit" id="drawer-submit-note-btn" class="btn-crm btn-crm-primary btn-crm-sm">
+                Save Note
+              </button>
+            </div>
+          </form>
+
+          <div id="drawer-notes-list" class="notes-timeline">
+            <div style="color:var(--crm-text-dim); font-size:0.75rem;">No internal notes yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client-side CRM logic -->
+    <script>
+      let currentToken = localStorage.getItem('admin_token') || '';
+      let activePage = 1;
+      let activeStatus = 'ALL';
+      let activeIndustry = 'ALL';
+      let searchQuery = '';
+      let searchTimeout = null;
+      let currentLeadInDrawer = null;
+
+      // Helper headers
+      function getAuthHeaders() {
+        const headers = { 'Content-Type': 'application/json' };
+        if (currentToken) {
+          headers['Authorization'] = `Bearer ${currentToken}`;
+        }
+        return headers;
+      }
+
+      // Check Authentication on Page Load
+      async function checkAuth() {
+        try {
+          const res = await fetch('/api/admin/me', {
+            headers: getAuthHeaders(),
+            credentials: 'include',
+          });
+
+          if (!res.ok) {
+            window.location.href = '/admin/login/';
+            return;
+          }
+
+          const data = await res.json();
+          if (!data.success || !data.admin) {
+            window.location.href = '/admin/login/';
+            return;
+          }
+
+          document.getElementById('admin-user-display').textContent = data.admin.name || data.admin.email;
+          loadStats();
+          loadLeads();
+        } catch (err) {
+          window.location.href = '/admin/login/';
+        }
+      }
+
+      // Load CRM Analytics
+      async function loadStats() {
+        try {
+          const res = await fetch('/api/admin/stats', {
+            headers: getAuthHeaders(),
+            credentials: 'include',
+          });
+          const json = await res.json();
+          if (!json.success || !json.data) return;
+
+          const stats = json.data;
+
+          document.getElementById('stat-total').textContent = stats.total || 0;
+          document.getElementById('stat-new').textContent = stats.new || 0;
+          document.getElementById('stat-contacted').textContent = stats.contacted || 0;
+          document.getElementById('stat-qualified').textContent = stats.qualified || 0;
+          document.getElementById('stat-proposals').textContent = stats.proposalSent || 0;
+          document.getElementById('stat-won').textContent = stats.won || 0;
+
+          const convRate = stats.total > 0 ? Math.round((stats.won / stats.total) * 100) : 0;
+          document.getElementById('stat-conversion-rate').textContent = `${convRate}% win rate`;
+
+          // Funnel steps
+          document.getElementById('funnel-new').textContent = stats.new || 0;
+          document.getElementById('funnel-contacted').textContent = stats.contacted || 0;
+          document.getElementById('funnel-qualified').textContent = stats.qualified || 0;
+          document.getElementById('funnel-preview').textContent = stats.previewCreated || 0;
+          document.getElementById('funnel-proposal').textContent = stats.proposalSent || 0;
+          document.getElementById('funnel-won').textContent = stats.won || 0;
+
+          // Industry breakdown
+          const industryList = document.getElementById('industry-breakdown-list');
+          industryList.innerHTML = '';
+          const byType = stats.byBusinessType || {};
+          const keys = Object.keys(byType);
+
+          if (keys.length === 0) {
+            industryList.innerHTML = '<div style="color:var(--crm-text-dim); font-size:0.75rem;">No industry data yet.</div>';
+          } else {
+            keys.forEach((type) => {
+              const count = byType[type];
+              const item = document.createElement('div');
+              item.className = 'distribution-item';
+              item.innerHTML = `
+                <span class="distribution-label">${type}</span>
+                <span class="distribution-count">${count}</span>
+              `;
+              industryList.appendChild(item);
+            });
+          }
+        } catch (err) {
+          console.error('Failed to load CRM stats:', err);
+        }
+      }
+
+      // Load Leads List
+      async function loadLeads() {
+        const tableBody = document.getElementById('leads-table-body');
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2rem; color: var(--crm-text-dim);">
+              Fetching leads...
+            </td>
+          </tr>
+        `;
+
+        try {
+          const params = new URLSearchParams({
+            page: String(activePage),
+            limit: '20',
+            status: activeStatus,
+            businessType: activeIndustry,
+          });
+
+          if (searchQuery) {
+            params.append('search', searchQuery);
+          }
+
+          const res = await fetch(`/api/leads?${params.toString()}`, {
+            headers: getAuthHeaders(),
+            credentials: 'include',
+          });
+
+          const json = await res.json();
+          if (!json.success) {
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--status-lost-color); padding: 2rem;">Error: ${json.error}</td></tr>`;
+            return;
+          }
+
+          const leads = json.data || [];
+          const pagination = json.pagination || { total: 0, page: 1, totalPages: 1 };
+
+          // Update Pagination
+          document.getElementById('pagination-summary').textContent = `Showing ${leads.length} of ${pagination.total} leads`;
+          document.getElementById('page-indicator').textContent = `Page ${pagination.page} of ${pagination.totalPages || 1}`;
+          document.getElementById('prev-page-btn').disabled = pagination.page <= 1;
+          document.getElementById('next-page-btn').disabled = pagination.page >= pagination.totalPages;
+
+          if (leads.length === 0) {
+            tableBody.innerHTML = `
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 3rem; color: var(--crm-text-dim);">
+                  No leads matching the current filter criteria.
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tableBody.innerHTML = '';
+          leads.forEach((lead) => {
+            const tr = document.createElement('tr');
+
+            // Format date
+            const dateStr = new Date(lead.created_at).toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            });
+
+            // Clean status badge
+            const statusKey = (lead.status || 'NEW').toLowerCase();
+            const statusBadgeClass = `badge-${statusKey}`;
+            const formattedStatus = (lead.status || 'NEW').replace(/_/g, ' ');
+
+            // Clean WhatsApp message
+            const cleanPhone = (lead.whatsapp || '').replace(/[^0-9+]/g, '');
+            const defaultMsg = `Hi ${lead.name}, this is Udit. I received your website enquiry for ${lead.business_name} and have reviewed your project details. Let me know when you'd like to check out the initial concept preview.`;
+            const waUrl = `https://wa.me/${cleanPhone.replace('+', '')}?text=${encodeURIComponent(defaultMsg)}`;
+
+            tr.innerHTML = `
+              <td>
+                <div class="lead-name-cell">${lead.name}</div>
+                <div class="lead-business-cell">${lead.business_name}</div>
+              </td>
+              <td>
+                <div style="font-weight: 600;">${lead.business_type}</div>
+                ${lead.current_website ? `<a href="${lead.current_website}" target="_blank" style="font-size: 0.75rem; color: var(--crm-primary); text-decoration: underline;">${lead.current_website.replace(/^https?:\/\//, '')}</a>` : '<span style="font-size: 0.75rem; color: var(--crm-text-dim);">No existing site</span>'}
+              </td>
+              <td>
+                <div style="font-size: 0.8125rem;">${lead.requirement || 'New Website'}</div>
+              </td>
+              <td>
+                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--crm-whatsapp); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                  <span>${lead.whatsapp}</span>
+                </a>
+              </td>
+              <td>
+                <span class="status-badge ${statusBadgeClass}">${formattedStatus}</span>
+              </td>
+              <td>
+                <span class="source-tag">${lead.source || 'direct'}</span>
+              </td>
+              <td style="color: var(--crm-text-muted); font-size: 0.75rem; white-space: nowrap;">
+                ${dateStr}
+              </td>
+              <td style="text-align: right; white-space: nowrap;">
+                <a href="${waUrl}" target="_blank" class="btn-crm btn-crm-whatsapp btn-crm-sm" title="Chat on WhatsApp" style="margin-right: 4px;">
+                  WhatsApp
+                </a>
+                <button class="btn-crm btn-crm-secondary btn-crm-sm view-lead-btn" data-id="${lead.id}">
+                  Details &rarr;
+                </button>
+              </td>
+            `;
+
+            tableBody.appendChild(tr);
+          });
+
+          // Attach detail button listeners
+          document.querySelectorAll('.view-lead-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const leadId = btn.getAttribute('data-id');
+              openLeadDrawer(leadId);
+            });
+          });
+        } catch (err) {
+          tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--status-lost-color); padding: 2rem;">Network error retrieving leads.</td></tr>`;
+        }
+      }
+
+      // Open Lead Detail Slide-over
+      async function openLeadDrawer(leadId) {
+        const backdrop = document.getElementById('drawer-backdrop');
+        const drawer = document.getElementById('lead-drawer');
+
+        backdrop.classList.add('active');
+        drawer.classList.add('active');
+
+        try {
+          const res = await fetch(`/api/leads/${leadId}`, {
+            headers: getAuthHeaders(),
+            credentials: 'include',
+          });
+
+          const json = await res.json();
+          if (!json.success || !json.data) return;
+
+          const lead = json.data;
+          const notes = json.notes || [];
+          currentLeadInDrawer = lead;
+
+          document.getElementById('drawer-lead-id').textContent = lead.id;
+          document.getElementById('drawer-business-name').textContent = lead.business_name;
+          document.getElementById('drawer-contact-name').textContent = `Contact: ${lead.name}`;
+          document.getElementById('drawer-business-type').textContent = lead.business_type;
+          document.getElementById('drawer-requirement').textContent = lead.requirement || 'New Website';
+          document.getElementById('drawer-whatsapp').textContent = lead.whatsapp;
+          document.getElementById('drawer-current-website').innerHTML = lead.current_website
+            ? `<a href="${lead.current_website}" target="_blank" style="color:var(--crm-primary); text-decoration:underline;">${lead.current_website}</a>`
+            : '<span style="color:var(--crm-text-dim)">None</span>';
+
+          document.getElementById('drawer-message').textContent = lead.message ? `"${lead.message}"` : 'No additional message submitted.';
+
+          document.getElementById('drawer-source').textContent = lead.source || 'direct';
+          document.getElementById('drawer-utm-campaign').textContent = lead.utm_campaign || 'None';
+          document.getElementById('drawer-utm-medium').textContent = lead.utm_medium || 'None';
+          document.getElementById('drawer-utm-content').textContent = lead.utm_content || 'None';
+          document.getElementById('drawer-landing-page').textContent = lead.landing_page || '/';
+          document.getElementById('drawer-created-at').textContent = new Date(lead.created_at).toLocaleString();
+
+          // Status Badge in Drawer
+          const statusBadge = document.getElementById('drawer-current-status-badge');
+          statusBadge.className = `status-badge badge-${(lead.status || 'NEW').toLowerCase()}`;
+          statusBadge.textContent = (lead.status || 'NEW').replace(/_/g, ' ');
+
+          // Highlight current status button
+          document.querySelectorAll('.status-changer-btn').forEach((btn) => {
+            btn.classList.toggle('current', btn.getAttribute('data-new-status') === lead.status);
+          });
+
+          // WhatsApp Button
+          const cleanPhone = (lead.whatsapp || '').replace(/[^0-9+]/g, '');
+          const waMsg = `Hi ${lead.name}, this is Udit. I received your website enquiry for ${lead.business_name} and have reviewed your project details. Let me know when you'd like to check out the concept preview.`;
+          const waBtn = document.getElementById('drawer-whatsapp-btn');
+          waBtn.href = `https://wa.me/${cleanPhone.replace('+', '')}?text=${encodeURIComponent(waMsg)}`;
+
+          // Render Notes
+          renderDrawerNotes(notes);
+        } catch (err) {
+          console.error('Failed to open lead detail:', err);
+        }
+      }
+
+      function renderDrawerNotes(notes) {
+        const notesList = document.getElementById('drawer-notes-list');
+        notesList.innerHTML = '';
+
+        if (!notes || notes.length === 0) {
+          notesList.innerHTML = '<div style="color:var(--crm-text-dim); font-size:0.75rem;">No private notes added yet.</div>';
+          return;
+        }
+
+        notes.forEach((n) => {
+          const noteEl = document.createElement('div');
+          noteEl.className = 'note-item';
+          const timeStr = new Date(n.created_at).toLocaleString();
+          noteEl.innerHTML = `
+            <div class="note-header">
+              <span style="font-weight:700; color:var(--crm-text);">${n.author || 'Udit Das'}</span>
+              <span>${timeStr}</span>
+            </div>
+            <div class="note-body">${n.note}</div>
+          `;
+          notesList.appendChild(noteEl);
+        });
+      }
+
+      function closeLeadDrawer() {
+        document.getElementById('drawer-backdrop').classList.remove('active');
+        document.getElementById('lead-drawer').classList.remove('active');
+        currentLeadInDrawer = null;
+      }
+
+      // Close drawer trigger
+      document.getElementById('close-drawer-btn').addEventListener('click', closeLeadDrawer);
+      document.getElementById('drawer-backdrop').addEventListener('click', closeLeadDrawer);
+
+      // Status change clicks
+      document.querySelectorAll('.status-changer-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          if (!currentLeadInDrawer) return;
+          const newStatus = btn.getAttribute('data-new-status');
+
+          try {
+            const res = await fetch(`/api/leads/${currentLeadInDrawer.id}`, {
+              method: 'PATCH',
+              headers: getAuthHeaders(),
+              credentials: 'include',
+              body: JSON.stringify({ status: newStatus }),
+            });
+
+            const json = await res.json();
+            if (json.success) {
+              currentLeadInDrawer.status = newStatus;
+              const statusBadge = document.getElementById('drawer-current-status-badge');
+              statusBadge.className = `status-badge badge-${newStatus.toLowerCase()}`;
+              statusBadge.textContent = newStatus.replace(/_/g, ' ');
+
+              document.querySelectorAll('.status-changer-btn').forEach((b) => {
+                b.classList.toggle('current', b.getAttribute('data-new-status') === newStatus);
+              });
+
+              loadStats();
+              loadLeads();
+            }
+          } catch (err) {
+            console.error('Failed to update status:', err);
+          }
+        });
+      });
+
+      // Add Note Form in Drawer
+      document.getElementById('drawer-add-note-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentLeadInDrawer) return;
+
+        const noteInput = document.getElementById('drawer-note-input');
+        const note = noteInput.value.trim();
+        if (!note) return;
+
+        const submitBtn = document.getElementById('drawer-submit-note-btn');
+        submitBtn.disabled = true;
+
+        try {
+          const res = await fetch(`/api/leads/${currentLeadInDrawer.id}/notes`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            credentials: 'include',
+            body: JSON.stringify({ note, author: 'Udit Das' }),
+          });
+
+          const json = await res.json();
+          if (json.success) {
+            noteInput.value = '';
+            // Refresh notes
+            const notesRes = await fetch(`/api/leads/${currentLeadInDrawer.id}/notes`, {
+              headers: getAuthHeaders(),
+              credentials: 'include',
+            });
+            const notesJson = await notesRes.json();
+            renderDrawerNotes(notesJson.data || []);
+          }
+        } catch (err) {
+          console.error('Failed to create note:', err);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      // Status filter pills
+      document.querySelectorAll('#status-filter-pills .status-pill').forEach((pill) => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('#status-filter-pills .status-pill').forEach((p) => p.classList.remove('active'));
+          pill.classList.add('active');
+          activeStatus = pill.getAttribute('data-status');
+          activePage = 1;
+          loadLeads();
+        });
+      });
+
+      // Industry filter dropdown
+      document.getElementById('filter-industry').addEventListener('change', (e) => {
+        activeIndustry = e.target.value;
+        activePage = 1;
+        loadLeads();
+      });
+
+      // Search input debouncing
+      document.getElementById('search-leads-input').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          searchQuery = e.target.value.trim();
+          activePage = 1;
+          loadLeads();
+        }, 300);
+      });
+
+      // Refresh Button
+      document.getElementById('refresh-leads-btn').addEventListener('click', () => {
+        loadStats();
+        loadLeads();
+      });
+
+      // Pagination clicks
+      document.getElementById('prev-page-btn').addEventListener('click', () => {
+        if (activePage > 1) {
+          activePage--;
+          loadLeads();
+        }
+      });
+
+      document.getElementById('next-page-btn').addEventListener('click', () => {
+        activePage++;
+        loadLeads();
+      });
+
+      // Export CSV
+      document.getElementById('export-csv-btn').addEventListener('click', () => {
+        const params = new URLSearchParams({
+          status: activeStatus,
+          businessType: activeIndustry,
+        });
+        if (searchQuery) params.append('search', searchQuery);
+
+        window.open(`/api/admin/export?${params.toString()}`, '_blank');
+      });
+
+      // Logout
+      document.getElementById('admin-logout-btn').addEventListener('click', async () => {
+        try {
+          await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' });
+        } catch (e) {}
+        localStorage.removeItem('admin_token');
+        window.location.href = '/admin/login/';
+      });
+
+      // Initialize
+      checkAuth();
+    </script>
+  </body>
+</html>

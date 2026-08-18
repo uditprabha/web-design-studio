@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin Login — Udit Das Lead Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body class="admin-body">
+    <div class="admin-login-wrapper">
+      <div class="admin-login-card">
+        <div class="admin-login-header">
+          <div class="admin-login-logo">UDIT DAS</div>
+          <div class="admin-login-subtitle">Lead Dashboard & CRM Login</div>
+        </div>
+
+        <div id="login-alert" class="admin-alert-banner"></div>
+
+        <form id="admin-login-form">
+          <div style="margin-bottom: 1.25rem;">
+            <label for="admin-email" style="display:block; font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--crm-text-dim); margin-bottom:0.375rem;">
+              Admin Email
+            </label>
+            <input
+              type="email"
+              id="admin-email"
+              name="email"
+              required
+              autocomplete="email"
+              class="crm-input"
+              style="padding-left: 0.875rem;"
+              placeholder="admin@uditdas.com"
+              value="admin@uditdas.com"
+            />
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <label for="admin-password" style="display:block; font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--crm-text-dim); margin-bottom:0.375rem;">
+              Password
+            </label>
+            <input
+              type="password"
+              id="admin-password"
+              name="password"
+              required
+              autocomplete="current-password"
+              class="crm-input"
+              style="padding-left: 0.875rem;"
+              placeholder="••••••••••••"
+              value="AdminSecret2026!"
+            />
+          </div>
+
+          <button
+            type="submit"
+            id="login-submit-btn"
+            class="btn-crm btn-crm-primary"
+            style="width: 100%; padding: 0.75rem; font-size: 0.875rem;"
+          >
+            SIGN IN TO DASHBOARD &rarr;
+          </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--crm-border); text-align: center; font-size: 0.75rem; color: var(--crm-text-dim);">
+          <div>Default Demo Credentials:</div>
+          <code style="color: var(--crm-text-muted); display: inline-block; margin-top: 4px; background: var(--crm-surface-raised); padding: 2px 6px; border-radius: 4px;">admin@uditdas.com / AdminSecret2026!</code>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Check if already authenticated
+      fetch('/api/admin/me', { credentials: 'include' })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.admin) {
+            window.location.href = '/admin/';
+          }
+        })
+        .catch(() => {});
+
+      const loginForm = document.getElementById('admin-login-form');
+      const submitBtn = document.getElementById('login-submit-btn');
+      const alertBox = document.getElementById('login-alert');
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verifying credentials...';
+
+        const email = document.getElementById('admin-email').value.trim();
+        const password = document.getElementById('admin-password').value;
+
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            if (data.token) {
+              localStorage.setItem('admin_token', data.token);
+            }
+            window.location.href = '/admin/';
+          } else {
+            alertBox.textContent = data.error || 'Authentication failed. Please check your credentials.';
+            alertBox.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'SIGN IN TO DASHBOARD →';
+          }
+        } catch (err) {
+          alertBox.textContent = 'Network error while attempting to log in. Please try again.';
+          alertBox.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SIGN IN TO DASHBOARD →';
+        }
+      });
+    </script>
+  </body>
+</html>

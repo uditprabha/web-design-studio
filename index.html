@@ -1499,8 +1499,31 @@
         <div class="demo-modal-topbar">
           <div class="demo-modal-brand-info">
             <span class="demo-modal-category" id="demo-modal-cat">Interior Design</span>
-            <span class="demo-modal-title" id="demo-modal-title">Concept Preview</span>
+            <span class="demo-modal-title" id="demo-modal-title">Aura Spaces — Full Live Demo</span>
           </div>
+
+          <!-- Browser Address Bar -->
+          <div class="demo-modal-browser-bar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0v3H9V6z"/></svg>
+            <span id="demo-modal-url">https://auraspaces.design</span>
+          </div>
+
+          <!-- Device Viewport Toggle (Desktop / Tablet / Mobile) -->
+          <div class="demo-viewport-toggles" id="demo-viewport-toggles">
+            <button type="button" class="demo-view-btn active" data-view="desktop" title="Desktop Viewport">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              Desktop
+            </button>
+            <button type="button" class="demo-view-btn" data-view="tablet" title="Tablet / iPad Viewport">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              Tablet
+            </button>
+            <button type="button" class="demo-view-btn" data-view="mobile" title="Mobile / Phone Viewport">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              Mobile
+            </button>
+          </div>
+
           <div class="demo-modal-actions">
             <button class="btn btn-accent btn-sm" id="demo-modal-cta">
               Get Similar Website →
@@ -1510,14 +1533,15 @@
             </button>
           </div>
         </div>
-        <div class="demo-modal-frame-viewport" id="demo-modal-body">
-          <!-- Populated dynamically via JS -->
+        <div class="demo-modal-frame-viewport view-desktop" id="demo-modal-body">
+          <!-- Populated dynamically with full interactive website UI via DemoSitesEngine -->
         </div>
       </div>
     </div>
 
     <!-- Scripts -->
     <script src="/js/config.js"></script>
+    <script src="/js/demo-sites.js"></script>
     <script src="/js/script.js"></script>
   </body>
 </html>

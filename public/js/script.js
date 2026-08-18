@@ -500,6 +500,7 @@ function initDemoModal() {
   const modalBackdrop = document.getElementById('demo-modal');
   const closeBtn = document.getElementById('demo-modal-close');
   const modalCtaBtn = document.getElementById('demo-modal-cta');
+  const viewportToggles = document.getElementById('demo-viewport-toggles');
 
   if (!modalBackdrop) return;
 
@@ -522,6 +523,25 @@ function initDemoModal() {
     }
   });
 
+  // Device Viewport Switcher
+  if (viewportToggles) {
+    const viewButtons = viewportToggles.querySelectorAll('.demo-view-btn');
+    const modalViewport = document.getElementById('demo-modal-body');
+    
+    viewButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.getAttribute('data-view');
+        viewButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (modalViewport) {
+          modalViewport.classList.remove('view-desktop', 'view-tablet', 'view-mobile');
+          modalViewport.classList.add(`view-${view}`);
+        }
+      });
+    });
+  }
+
   if (modalCtaBtn) {
     modalCtaBtn.addEventListener('click', () => {
       trackEvent('click_free_concept', { source: 'modal_topbar_cta' });
@@ -529,6 +549,10 @@ function initDemoModal() {
       const leadSection = document.getElementById('lead-form-section');
       if (leadSection) {
         leadSection.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          const nameInput = document.getElementById('business-name');
+          if (nameInput) nameInput.focus();
+        }, 400);
       }
     });
   }
@@ -538,6 +562,7 @@ function openDemoModalWithCategory(category) {
   const modalBackdrop = document.getElementById('demo-modal');
   const modalCategoryBadge = document.getElementById('demo-modal-cat');
   const modalTitle = document.getElementById('demo-modal-title');
+  const modalUrl = document.getElementById('demo-modal-url');
   const modalViewport = document.getElementById('demo-modal-body');
   const businessTypeSelect = document.getElementById('business-type');
 
@@ -546,30 +571,24 @@ function openDemoModalWithCategory(category) {
   const normKey = normalizeCategoryKey(category);
   const data = DEMO_DATA[normKey] || DEMO_DATA.interior;
 
-  if (modalCategoryBadge) modalCategoryBadge.textContent = data.category;
-  if (modalTitle) modalTitle.textContent = data.brandName + ' — Concept Preview';
+  const demoUrls = {
+    interior: 'https://auraspaces.design',
+    salon: 'https://lumierehair.studio',
+    restaurant: 'https://osteriaflora.it',
+    dental: 'https://apexdental.care',
+    gym: 'https://forgeathletic.fit'
+  };
 
-  // Populate interactive simulated viewport
+  if (modalCategoryBadge) modalCategoryBadge.textContent = data.category;
+  if (modalTitle) modalTitle.textContent = `${data.brandName} — Live Website Demo`;
+  if (modalUrl) modalUrl.textContent = demoUrls[normKey] || 'https://auraspaces.design';
+
+  // Render Full Interactive Website UI
   if (modalViewport) {
-    modalViewport.innerHTML = generateSimulatedPageHtml(normKey, data);
-    
-    // Attach listener to internal modal action buttons
-    const modalActionCta = modalViewport.querySelector('.modal-action-cta-btn');
-    if (modalActionCta) {
-      modalActionCta.addEventListener('click', () => {
-        trackEvent('click_free_concept', { source: 'modal_inner_cta', category: normKey });
-        modalBackdrop.classList.remove('active');
-        document.body.style.overflow = '';
-        
-        const leadSection = document.getElementById('lead-form-section');
-        if (leadSection) {
-          leadSection.scrollIntoView({ behavior: 'smooth' });
-          setTimeout(() => {
-            const nameInput = document.getElementById('business-name');
-            if (nameInput) nameInput.focus();
-          }, 450);
-        }
-      });
+    if (window.DemoSitesEngine && typeof window.DemoSitesEngine.renderCategory === 'function') {
+      modalViewport.innerHTML = window.DemoSitesEngine.renderCategory(normKey);
+    } else {
+      modalViewport.innerHTML = generateSimulatedPageHtml(normKey, data);
     }
   }
 

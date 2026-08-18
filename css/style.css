@@ -2365,13 +2365,14 @@ ul, ol {
 }
 
 .demo-modal-topbar {
-  background-color: #F8F9FA;
-  border-bottom: 1px solid var(--border-medium);
-  padding: 0.85rem 1.5rem;
+  background-color: #0F172A;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.65rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .demo-modal-brand-info {
@@ -2381,21 +2382,68 @@ ul, ol {
 }
 
 .demo-modal-category {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent-primary);
-  background-color: var(--accent-subtle);
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  color: #38BDF8;
+  background-color: rgba(56, 189, 248, 0.15);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
 .demo-modal-title {
   font-family: var(--font-family-heading);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #FFFFFF;
+}
+
+.demo-modal-browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94A3B8;
+  font-size: 0.75rem;
+  font-family: monospace;
+}
+
+.demo-modal-browser-bar svg {
+  color: #22C55E;
+}
+
+.demo-viewport-toggles {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.demo-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.28rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-view-btn.active {
+  background: #2563EB;
+  color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .demo-modal-actions {
@@ -2407,11 +2455,974 @@ ul, ol {
 .demo-modal-frame-viewport {
   flex: 1;
   overflow-y: auto;
-  min-height: 480px;
-  max-height: 68vh;
-  background-color: #F9F9F8;
+  min-height: 520px;
+  max-height: 76vh;
+  background-color: #0A0D14;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* Device Viewport Containers */
+.demo-modal-frame-viewport.view-desktop .demo-site-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+.demo-modal-frame-viewport.view-tablet .demo-site-wrapper {
+  width: 768px;
+  max-width: 768px;
+  margin: 1.5rem auto;
+  border: 10px solid #1E293B;
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.demo-modal-frame-viewport.view-mobile .demo-site-wrapper {
+  width: 390px;
+  max-width: 390px;
+  margin: 1.5rem auto;
+  border: 12px solid #1E293B;
+  border-radius: 36px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   FULL WEBSITE UI DEMO THEMES & COMPONENTS
+   ========================================================================== */
+.demo-site-wrapper {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1E293B;
+  background: #FFFFFF;
+  line-height: 1.6;
+}
+
+/* Common Header */
+.ds-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ds-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.ds-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.ds-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.ds-logo-mark {
+  color: #B89B72;
+  font-size: 1.25rem;
+}
+
+.ds-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-logo-title {
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  color: #0F172A;
+}
+
+.ds-logo-sub {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.ds-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.ds-nav-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.ds-nav-link:hover {
+  color: #0F172A;
+}
+
+/* Buttons */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.ds-btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+.ds-btn-outline {
+  background: transparent;
+  border-color: #0F172A;
+  color: #0F172A;
+}
+
+.ds-btn-outline:hover {
+  background: #0F172A;
+  color: #FFFFFF;
+}
+
+.ds-btn-ghost {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ds-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ds-btn-gold {
+  background: #B89B72;
+  color: #FFFFFF;
+}
+.ds-btn-gold:hover {
+  background: #9A7F59;
+}
+
+.ds-btn-salon {
+  background: #D97706;
+  color: #FFFFFF;
+}
+.ds-btn-salon:hover {
+  background: #B45309;
+}
+
+.ds-btn-dining {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+.ds-btn-dining:hover {
+  background: #B91C1C;
+}
+
+.ds-btn-dental {
+  background: #0284C7;
+  color: #FFFFFF;
+}
+.ds-btn-dental:hover {
+  background: #0369A1;
+}
+
+.ds-btn-gym {
+  background: #22C55E;
+  color: #052E16;
+  font-weight: 700;
+}
+.ds-btn-gym:hover {
+  background: #16A34A;
+  color: #FFFFFF;
+}
+
+/* Hero */
+.ds-hero {
+  padding: 4.5rem 0 3.5rem;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.ds-hero-content {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.ds-badge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+}
+
+.ds-badge-gold {
+  background: rgba(184, 155, 114, 0.2);
+  color: #E2D7C3;
+  border: 1px solid rgba(184, 155, 114, 0.4);
+}
+
+.ds-hero-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.site-salon .ds-hero-title,
+.site-restaurant .ds-hero-title {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+.site-gym .ds-hero-title,
+.site-dental .ds-hero-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.ds-hero-subtitle {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.ds-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.ds-hero-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.ds-hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ds-stat-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.ds-stat-txt {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Sections */
+.ds-section {
+  padding: 3.5rem 0;
+}
+
+.ds-bg-alt {
+  background-color: #F8FAFC;
+}
+
+.ds-section-header {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 2.25rem;
+}
+
+.ds-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #B89B72;
+  margin-bottom: 0.5rem;
+}
+
+.ds-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.ds-lead {
+  font-size: 0.95rem;
+  color: #64748B;
+}
+
+/* Filter Tabs */
+.ds-filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.ds-filter-btn {
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ds-filter-btn:hover {
+  background: #E2E8F0;
+}
+
+.ds-filter-btn.active {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-color: #0F172A;
+}
+
+/* Portfolio Grid */
+.ds-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.ds-portfolio-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ds-portfolio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.ds-portfolio-img {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 0.75rem;
+}
+
+.ds-portfolio-tag {
+  background: rgba(15, 23, 42, 0.85);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.ds-portfolio-meta {
+  padding: 1.25rem;
+}
+
+.ds-portfolio-meta h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #0F172A;
+}
+
+.ds-portfolio-meta p {
+  font-size: 0.82rem;
+  color: #64748B;
+  line-height: 1.5;
+}
+
+/* Material Lab */
+.ds-material-interactive-box {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.ds-material-chips {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.ds-mat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 6px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ds-mat-chip.active {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-color: #0F172A;
+}
+
+.ds-mat-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.ds-material-display {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.ds-mat-info h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #0F172A;
+}
+
+.ds-mat-info p {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 1.25rem;
+}
+
+.ds-mat-specs {
+  list-style: none;
+  padding: 0;
+  font-size: 0.82rem;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ds-mat-preview-swatch {
+  height: 220px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.ds-swatch-badge {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Brief / Reservation / Booking Forms */
+.ds-brief-card,
+.ds-booking-widget-box,
+.ds-reservation-box,
+.ds-pass-box {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-radius: 12px;
+  padding: 2.5rem;
+}
+
+.ds-brief-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.ds-form-group {
+  margin-bottom: 1rem;
+}
+
+.ds-form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #CBD5E1;
+  margin-bottom: 0.35rem;
+}
+
+.ds-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+}
+
+.ds-input:focus {
+  outline: none;
+  border-color: #38BDF8;
+}
+
+.ds-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ds-top-alert {
+  background: #B45309;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Salon Services & Menu items */
+.ds-services-grid,
+.ds-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.ds-service-card,
+.ds-menu-item-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-svc-header,
+.ds-menu-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.ds-svc-header h4,
+.ds-menu-top h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.ds-svc-price,
+.ds-menu-price {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #D97706;
+}
+
+.site-restaurant .ds-menu-price {
+  color: #DC2626;
+}
+
+.ds-svc-duration {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin-bottom: 0.5rem;
+}
+
+.ds-svc-desc,
+.ds-menu-desc {
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+/* Stylist / Team Cards */
+.ds-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.ds-team-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ds-team-img {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+}
+
+.ds-team-info {
+  padding: 1.25rem;
+}
+
+.ds-team-info h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.ds-team-role {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #D97706;
+  margin-bottom: 0.6rem;
+}
+
+.ds-team-info p {
+  font-size: 0.82rem;
+  color: #64748B;
+  margin-bottom: 1rem;
+}
+
+/* Time Chips */
+.ds-time-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ds-time-chip {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: #1E293B;
+  border: 1px solid #334155;
+  color: #E2E8F0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ds-time-chip.active {
+  background: #38BDF8;
+  color: #0F172A;
+  border-color: #38BDF8;
+}
+
+/* Quiz Box (Dental) */
+.ds-quiz-box {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 2.5rem;
+}
+
+.ds-quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.ds-quiz-btn {
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ds-quiz-btn:hover {
+  border-color: #0284C7;
+  background: #F0F9FF;
+}
+
+.ds-quiz-btn strong {
+  font-size: 0.95rem;
+  color: #0F172A;
+}
+
+.ds-quiz-btn span {
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.ds-quiz-result-card {
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  border-radius: 8px;
+  padding: 1.75rem;
+  text-align: center;
+}
+
+.ds-result-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0284C7;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.ds-quiz-result-card h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0369A1;
+  margin-bottom: 0.5rem;
+}
+
+.ds-quiz-result-card p {
+  font-size: 0.9rem;
+  color: #334155;
+  margin-bottom: 1.25rem;
+}
+
+.ds-result-pricing {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* Treatment Cards */
+.ds-treatments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.ds-treatment-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.ds-t-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.ds-treatment-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.ds-treatment-card p {
+  font-size: 0.82rem;
+  color: #64748B;
+  line-height: 1.5;
+}
+
+/* Gym Schedule Table */
+.ds-schedule-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ds-schedule-row {
+  display: grid;
+  grid-template-columns: 110px 1.5fr 1fr 120px 140px;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+}
+
+.ds-sched-time {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #0F172A;
+}
+
+.ds-sched-class {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-sched-class strong {
+  font-size: 0.92rem;
+  color: #0F172A;
+}
+
+.ds-sched-class span {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.ds-sched-intensity {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.ds-spot-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Pricing Grid */
+.ds-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.ds-pricing-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-pricing-card.featured {
+  border-color: #22C55E;
+  box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.2);
+}
+
+.ds-card-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #22C55E;
+  color: #052E16;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.ds-pricing-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ds-price {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin-bottom: 0.5rem;
+}
+
+.ds-price span {
+  font-size: 0.85rem;
+  color: #64748B;
+  font-weight: normal;
+}
+
+.ds-price-features {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 2rem;
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: #334155;
+}
+
+/* Footer */
+.ds-footer {
+  background: #0B0E14;
+  color: #94A3B8;
+  padding: 2.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.82rem;
+}
+
+.ds-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.ds-footer-logo {
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 768px) {
+  .ds-brief-card,
+  .ds-material-display,
+  .ds-form-row,
+  .ds-quiz-options {
+    grid-template-columns: 1fr;
+  }
+  .ds-schedule-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .ds-nav {
+    display: none;
+  }
+  .ds-hero-stats-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* --------------------------------------------------------------------------
    19. Responsive Design & Media Queries

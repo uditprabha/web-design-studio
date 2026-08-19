@@ -161,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroShowcase();
   initIndustrySelector();
   initFeaturedDemos();
-  initDemoModal();
   initLeadForm();
   initWhatsAppCTAs();
   initFaqAccordion();
@@ -238,8 +237,8 @@ const DEMO_DATA = {
     category: 'Interior Design',
     brandName: 'AURA SPACES',
     url: 'https://auraspaces.design',
-    image: '/assets/images/interior.jpg',
-    fallbackImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/interior_website_ui_1787105567375.jpg',
+    fallbackImage: '/images/interior_website_ui_1787105567375.jpg',
     title: 'Minimalist Architecture & Luxury Interior Studio',
     tagline: 'Designing calm, enduring sanctuaries for modern living with travertine stone and warm light.',
     accentColor: '#B89B72',
@@ -254,8 +253,8 @@ const DEMO_DATA = {
     category: 'Salon & Beauty',
     brandName: 'LUMIÈRE BEAUTY',
     url: 'https://lumierebeauty.co',
-    image: '/assets/images/salon.jpg',
-    fallbackImage: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/salon_website_ui_1787105583131.jpg',
+    fallbackImage: '/images/salon_website_ui_1787105583131.jpg',
     title: 'Luxury Hair, Skin & Aesthetic Sanctuary',
     tagline: 'Elevating everyday beauty with bespoke treatments, balayage mastery and VIP booking.',
     accentColor: '#D97706',
@@ -270,8 +269,8 @@ const DEMO_DATA = {
     category: 'Restaurant & Café',
     brandName: 'OSTERIA FLORA',
     url: 'https://osteriaflora.it',
-    image: '/assets/images/restaurant.jpg',
-    fallbackImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/restaurant_website_ui_1787105601289.jpg',
+    fallbackImage: '/images/restaurant_website_ui_1787105601289.jpg',
     title: 'Artisan Woodfired Kitchen & Espresso Bar',
     tagline: 'Authentic seasonal Italian dining in a candlelit botanical atmosphere.',
     accentColor: '#DC2626',
@@ -286,8 +285,8 @@ const DEMO_DATA = {
     category: 'Dental Clinic',
     brandName: 'APEX DENTAL CARE',
     url: 'https://apexdental.clinic',
-    image: '/assets/images/dental.jpg',
-    fallbackImage: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/dental_website_ui_1787105616391.jpg',
+    fallbackImage: '/images/dental_website_ui_1787105616391.jpg',
     title: 'Modern Cosmetic & Family Dental Practice',
     tagline: 'Gentle, technology-driven dentistry with radiant smile makeovers and 3D digital scans.',
     accentColor: '#0284C7',
@@ -302,8 +301,8 @@ const DEMO_DATA = {
     category: 'Gym & Fitness',
     brandName: 'FORGE ATHLETICS',
     url: 'https://forgeathletics.fit',
-    image: '/assets/images/gym.jpg',
-    fallbackImage: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/gym_website_ui_1787105631069.jpg',
+    fallbackImage: '/images/gym_website_ui_1787105631069.jpg',
     title: 'High-Performance Strength & Conditioning Club',
     tagline: 'Transform your body with elite coaching, Olympic platforms and high-energy community.',
     accentColor: '#16A34A',
@@ -334,11 +333,18 @@ function initHeroShowcase() {
   const deviceBtns = document.querySelectorAll('.device-btn');
   const mockupContainer = document.querySelector('.mockup-container');
   const heroMockupOpenBtn = document.getElementById('hero-mockup-open-btn');
-  const heroMockupViewport = document.getElementById('hero-mockup-viewport');
 
   let currentActiveCategory = 'interior';
 
   if (!tabs.length) return;
+
+  const categoryFormMap = {
+    interior: 'Interior Design',
+    salon: 'Salon & Beauty',
+    restaurant: 'Restaurant & Café',
+    dental: 'Dental',
+    gym: 'Gym & Fitness'
+  };
 
   const setActiveCategory = (category) => {
     const normKey = normalizeCategoryKey(category);
@@ -374,20 +380,27 @@ function initHeroShowcase() {
     });
   });
 
-  // Hero Mockup "View Demo ↗" button in browser chrome
+  const scrollToLeadForm = (catKey) => {
+    const businessTypeSelect = document.getElementById('business-type');
+    if (businessTypeSelect && categoryFormMap[catKey]) {
+      businessTypeSelect.value = categoryFormMap[catKey];
+    }
+    const leadSection = document.getElementById('lead-form-section');
+    if (leadSection) {
+      leadSection.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const nameInput = document.getElementById('business-name');
+        if (nameInput) nameInput.focus();
+      }, 400);
+    }
+  };
+
+  // Hero Mockup CTA button in browser chrome
   if (heroMockupOpenBtn) {
     heroMockupOpenBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      trackEvent('click_demo', { category: currentActiveCategory, source: 'hero_mockup_button' });
-      openDemoModalWithCategory(currentActiveCategory);
-    });
-  }
-
-  // Click on Hero Mockup viewport to inspect full demo
-  if (heroMockupViewport) {
-    heroMockupViewport.addEventListener('click', () => {
-      trackEvent('click_demo', { category: currentActiveCategory, source: 'hero_mockup_viewport' });
-      openDemoModalWithCategory(currentActiveCategory);
+      e.preventDefault();
+      trackEvent('click_free_concept', { category: currentActiveCategory, source: 'hero_mockup_button' });
+      scrollToLeadForm(currentActiveCategory);
     });
   }
 
@@ -415,24 +428,46 @@ function initHeroShowcase() {
    -------------------------------------------------------------------------- */
 function initIndustrySelector() {
   const cards = document.querySelectorAll('.industry-card');
+  const categoryFormMap = {
+    interior: 'Interior Design',
+    salon: 'Salon & Beauty',
+    restaurant: 'Restaurant & Café',
+    dental: 'Dental',
+    gym: 'Gym & Fitness'
+  };
+
   cards.forEach(card => {
-    const handleOpen = (e) => {
+    const handleSelect = (e) => {
+      e.preventDefault();
       const targetCard = e.currentTarget || card;
       const rawCat = targetCard.getAttribute('data-category');
       const category = normalizeCategoryKey(rawCat);
       trackEvent('click_industry', { category });
-      openDemoModalWithCategory(category);
+      
+      const businessTypeSelect = document.getElementById('business-type');
+      if (businessTypeSelect && categoryFormMap[category]) {
+        businessTypeSelect.value = categoryFormMap[category];
+      }
+
+      const leadSection = document.getElementById('lead-form-section');
+      if (leadSection) {
+        leadSection.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          const nameInput = document.getElementById('business-name');
+          if (nameInput) nameInput.focus();
+        }, 400);
+      }
     };
 
-    card.addEventListener('click', handleOpen);
+    card.addEventListener('click', handleSelect);
     card.setAttribute('tabindex', '0');
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `View ${card.querySelector('.industry-card-title')?.textContent || 'Industry'} Website Demo`);
+    card.setAttribute('aria-label', `Get Free Concept for ${card.querySelector('.industry-card-title')?.textContent || 'Industry'}`);
     
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleOpen(e);
+        handleSelect(e);
       }
     });
   });
@@ -442,13 +477,14 @@ function initIndustrySelector() {
    5. Featured Demos Actions & Form Autofill Controller
    -------------------------------------------------------------------------- */
 function initFeaturedDemos() {
-  // "Get Similar Concept" buttons pre-select category in the lead form
+  // "Get Free Concept" buttons pre-select category in the lead form
   const similarBtns = document.querySelectorAll('.btn-select-category');
   const businessTypeSelect = document.getElementById('business-type');
   const leadSection = document.getElementById('lead-form-section');
 
   similarBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
+      e.preventDefault();
       const categoryVal = btn.getAttribute('data-category-val');
       trackEvent('click_free_concept', { source: 'demo_card_similar', category: categoryVal });
       
@@ -457,224 +493,13 @@ function initFeaturedDemos() {
       }
       if (leadSection) {
         leadSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  });
-
-  // "View Full Site Demo" buttons open the interactive preview modal
-  const viewDemoBtns = document.querySelectorAll('.btn-open-demo');
-  viewDemoBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const el = e.currentTarget || btn;
-      const rawCat = el.getAttribute('data-category') || el.closest('[data-category]')?.getAttribute('data-category');
-      const category = normalizeCategoryKey(rawCat);
-      trackEvent('click_demo', { category, source: 'featured_section_btn' });
-      openDemoModalWithCategory(category);
-    });
-  });
-
-  // Entire preview windows and image frames in showcase cards also open demo on click
-  const previewWindows = document.querySelectorAll('.concept-item-card .concept-preview-window');
-  previewWindows.forEach(win => {
-    win.style.cursor = 'pointer';
-    win.setAttribute('title', 'Click to open full website demo');
-    win.addEventListener('click', (e) => {
-      // Avoid double trigger if clicking directly on a button inside
-      if (e.target.closest('.btn-open-demo') || e.target.closest('.btn-select-category')) {
-        return;
-      }
-      const card = win.closest('.concept-item-card');
-      const rawCat = card?.querySelector('.btn-open-demo')?.getAttribute('data-category') || card?.id?.replace('demo-', '');
-      const category = normalizeCategoryKey(rawCat);
-      trackEvent('click_demo', { category, source: 'featured_window_click' });
-      openDemoModalWithCategory(category);
-    });
-  });
-}
-
-/* --------------------------------------------------------------------------
-   6. Interactive Demo Modal Controller
-   -------------------------------------------------------------------------- */
-function initDemoModal() {
-  const modalBackdrop = document.getElementById('demo-modal');
-  const closeBtn = document.getElementById('demo-modal-close');
-  const modalCtaBtn = document.getElementById('demo-modal-cta');
-  const viewportToggles = document.getElementById('demo-viewport-toggles');
-
-  if (!modalBackdrop) return;
-
-  const closeModal = () => {
-    modalBackdrop.classList.remove('active');
-    document.body.style.overflow = '';
-  };
-
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-
-  modalBackdrop.addEventListener('click', (e) => {
-    if (e.target === modalBackdrop) {
-      closeModal();
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
-      closeModal();
-    }
-  });
-
-  // Device Viewport Switcher
-  if (viewportToggles) {
-    const viewButtons = viewportToggles.querySelectorAll('.demo-view-btn');
-    const modalViewport = document.getElementById('demo-modal-body');
-    
-    viewButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const view = btn.getAttribute('data-view');
-        viewButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        if (modalViewport) {
-          modalViewport.classList.remove('view-desktop', 'view-tablet', 'view-mobile');
-          modalViewport.classList.add(`view-${view}`);
-        }
-      });
-    });
-  }
-
-  if (modalCtaBtn) {
-    modalCtaBtn.addEventListener('click', () => {
-      trackEvent('click_free_concept', { source: 'modal_topbar_cta' });
-      closeModal();
-      const leadSection = document.getElementById('lead-form-section');
-      if (leadSection) {
-        leadSection.scrollIntoView({ behavior: 'smooth' });
         setTimeout(() => {
           const nameInput = document.getElementById('business-name');
           if (nameInput) nameInput.focus();
         }, 400);
       }
     });
-  }
-}
-
-function openDemoModalWithCategory(category) {
-  const modalBackdrop = document.getElementById('demo-modal');
-  const modalCategoryBadge = document.getElementById('demo-modal-cat');
-  const modalTitle = document.getElementById('demo-modal-title');
-  const modalUrl = document.getElementById('demo-modal-url');
-  const modalViewport = document.getElementById('demo-modal-body');
-  const businessTypeSelect = document.getElementById('business-type');
-
-  if (!modalBackdrop) return;
-
-  const normKey = normalizeCategoryKey(category);
-  const data = DEMO_DATA[normKey] || DEMO_DATA.interior;
-
-  const demoUrls = {
-    interior: 'https://auraspaces.design',
-    salon: 'https://lumierehair.studio',
-    restaurant: 'https://osteriaflora.it',
-    dental: 'https://apexdental.care',
-    gym: 'https://forgeathletic.fit'
-  };
-
-  if (modalCategoryBadge) modalCategoryBadge.textContent = data.category;
-  if (modalTitle) modalTitle.textContent = `${data.brandName} — Live Website Demo`;
-  if (modalUrl) modalUrl.textContent = demoUrls[normKey] || 'https://auraspaces.design';
-
-  // Render Full Interactive Website UI
-  if (modalViewport) {
-    if (window.DemoSitesEngine && typeof window.DemoSitesEngine.renderCategory === 'function') {
-      modalViewport.innerHTML = window.DemoSitesEngine.renderCategory(normKey);
-    } else {
-      modalViewport.innerHTML = generateSimulatedPageHtml(normKey, data);
-    }
-  }
-
-  // Pre-set select in lead form
-  if (businessTypeSelect) {
-    const map = {
-      interior: 'Interior Design',
-      salon: 'Salon & Beauty',
-      restaurant: 'Restaurant & Café',
-      dental: 'Dental',
-      gym: 'Gym & Fitness'
-    };
-    if (map[normKey]) {
-      businessTypeSelect.value = map[normKey];
-    }
-  }
-
-  modalBackdrop.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function generateSimulatedPageHtml(category, data) {
-  const statsHtml = data.stats.map(s => `
-    <div class="modal-stat-pill">
-      <div class="modal-stat-num">${s.num}</div>
-      <div class="modal-stat-label">${s.label}</div>
-    </div>
-  `).join('');
-
-  const featuresHtml = data.features.map(f => `
-    <span class="modal-feature-tag">✦ ${f}</span>
-  `).join('');
-
-  const waUrl = buildWhatsAppUrl('', data.category);
-
-  return `
-    <div class="modal-fullsite-container">
-      <div class="modal-fullsite-banner">
-        <div class="modal-fullsite-meta">
-          <h3>${data.brandName}</h3>
-          <p>${data.tagline}</p>
-        </div>
-        <div class="modal-fullsite-stats">
-          ${statsHtml}
-        </div>
-      </div>
-      
-      <div class="modal-fullsite-viewport">
-        <div class="modal-fullsite-img-frame">
-          <img 
-            src="${data.image}" 
-            onerror="this.onerror=null; this.src='${data.fallbackImage || ''}';"
-            alt="${data.title} Luxury Website Demo" 
-            class="modal-fullsite-img" 
-            referrerPolicy="no-referrer" 
-            loading="lazy"
-          />
-        </div>
-      </div>
-
-      <div class="modal-fullsite-footer">
-        <div class="modal-feature-tags">
-          ${featuresHtml}
-        </div>
-        <div class="modal-cta-button-group" style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-          <a 
-            href="${waUrl}" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="btn btn-whatsapp btn-sm dynamic-whatsapp-link"
-            style="padding:0.45rem 1rem; font-size:0.8125rem; text-decoration:none;"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            Ask on WhatsApp
-          </a>
-          <button 
-            type="button" 
-            class="btn btn-primary btn-sm modal-action-cta-btn"
-            style="padding:0.45rem 1.1rem; font-size:0.8125rem;"
-          >
-            Get a Similar Website Concept →
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
+  });
 }
 
 /* --------------------------------------------------------------------------
